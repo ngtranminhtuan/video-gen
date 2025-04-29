@@ -9,4 +9,10 @@ aiofiles>=23.1.0
 httpx>=0.24.0,<0.25.0
 websockets>=11.0.0
 ffmpeg-python>=0.2.0
-PyYAML>=6.0 
+PyYAML>=6.0
+# Text-audio alignment
+aeneas>=1.7.3
+# Alternative if aeneas is difficult to install
+# gentle>=0.10.1
+# For simpler alignment without external dependencies
+whisperx>=1.0.0 

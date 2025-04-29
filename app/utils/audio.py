@@ -1,7 +1,8 @@
 import subprocess
 import os
 import logging
-from typing import Tuple
+from typing import Tuple, List
+from app.utils.text_alignment import align_text_with_audio, generate_srt_file, TextSegment, fallback_alignment
 
 logger = logging.getLogger(__name__)
 
@@ -76,20 +77,31 @@ def combine_audio_video(audio_path: str, video_paths: list, output_path: str) ->
         logger.error(f"Error combining audio and video: {str(e)}")
         raise Exception(f"Failed to combine audio and video: {str(e)}")
 
-def add_captions(video_path: str, captions: str, output_path: str) -> str:
-    """Add captions to video using FFmpeg"""
+async def add_captions(video_path: str, text: str, audio_path: str, output_path: str) -> str:
+    """Add captions to video using FFmpeg with text-audio alignment"""
     try:
-        # Create temporary subtitle file
-        subtitle_path = os.path.join(os.path.dirname(output_path), "subtitles.srt")
-        with open(subtitle_path, "w", encoding="utf-8") as f:
-            f.write(captions)
+        logger.info(f"Adding captions to video: {video_path}")
         
-        # Add subtitles
+        # Align text with audio to get accurate timings
+        logger.info("Aligning text with audio...")
+        try:
+            segments = await align_text_with_audio(text, audio_path)
+            logger.info(f"Successfully aligned {len(segments)} text segments with audio")
+        except Exception as e:
+            logger.warning(f"Advanced alignment failed: {str(e)}, falling back to basic method")
+            segments = fallback_alignment(text, audio_path)
+        
+        # Create SRT file
+        subtitle_path = os.path.join(os.path.dirname(output_path), "subtitles.srt")
+        generate_srt_file(segments, subtitle_path)
+        logger.info(f"Generated subtitle file: {subtitle_path}")
+        
+        # Add subtitles to video
         cmd = [
             'ffmpeg',
             '-y',  # Overwrite output file if it exists
             '-i', video_path,
-            '-vf', f"subtitles={subtitle_path}:force_style='Fontname=Arial,FontSize=24,PrimaryColour=&H00FFFFFF,BackColour=&H80000000,BorderStyle=4'",
+            '-vf', f"subtitles={subtitle_path}:force_style='Fontname=Arial,FontSize=24,PrimaryColour=&H00FFFFFF,BackColour=&H80000000,BorderStyle=4,Alignment=2'",
             '-c:a', 'copy',
             output_path
         ]
@@ -108,7 +120,7 @@ def add_captions(video_path: str, captions: str, output_path: str) -> str:
 
 def generate_srt_from_text(text: str, duration: float) -> str:
     """
-    Generate SRT format captions from text
+    Generate SRT format captions from text (legacy method)
     Simple implementation: split text into roughly equal segments based on duration
     """
     lines = text.split('.')

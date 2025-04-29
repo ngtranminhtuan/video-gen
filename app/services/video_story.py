@@ -169,18 +169,15 @@ async def process_video_job(job_id: str, request: VideoStoryRequest):
         
         # Step 8: Add captions if requested
         if request.add_captions:
-            status.message = "Adding captions"
+            status.message = "Adding captions with speech alignment"
             status.progress = 95
             
-            # Generate SRT captions
-            captions = audio.generate_srt_from_text(request.text, audio_duration)
-            
-            # Add captions to video
+            # Add captions to video with text-audio alignment
             captioned_filename = f"{job_id}_captioned.mp4"
             captioned_path = os.path.join(OUTPUT_DIR, captioned_filename)
             
-            final_path = audio.add_captions(combined_path, captions, captioned_path)
-            logger.info(f"Job {job_id}: Added captions, final video at {final_path}")
+            final_path = await audio.add_captions(combined_path, request.text, audio_path, captioned_path)
+            logger.info(f"Job {job_id}: Added aligned captions, final video at {final_path}")
         else:
             final_path = combined_path
         
