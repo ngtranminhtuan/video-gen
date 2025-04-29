@@ -1,0 +1,32 @@
+# ComfyUI Workflow Configurations
+workflow:
+  # Node IDs in the workflow that need to be updated
+  nodes:
+    positive_prompt: 6        # Node ID for positive prompt
+    negative_prompt: 7        # Node ID for negative prompt
+    sampler: 3                # Node ID for sampler settings
+    video_settings: 50        # Node ID for video generation settings
+    frame_rate: 54            # Node ID for frame rate
+    image_loader: 52          # Node ID for image loader
+
+  # Default values for workflow parameters
+  defaults:
+    image_width: 848
+    image_height: 480
+    video_length: 81          # In frames
+    frame_rate: 8
+    steps: 20
+    cfg: 6.0
+    sampler_name: "uni_pc"
+    scheduler: "simple"
+
+# Connection Settings
+connection:
+  ws_url: "ws://127.0.0.1:8188/ws"
+  client_param: "clientId"
+  poll_interval: 1            # How often to poll for results (in seconds)
+  timeout: 300                # Maximum time to wait for workflow completion (in seconds)
+
+# File Paths
+paths:
+  workflow_file: "workflows/image-to-video_api.json" 

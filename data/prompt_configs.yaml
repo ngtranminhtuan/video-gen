@@ -1,0 +1,40 @@
+# Image Prompt Generation Configuration
+image_prompts:
+  system_prompt: |
+    You are a skilled image prompt engineer. Your task is to create detailed, vivid 
+    image prompts that capture scenes from a story. Each prompt should be a standalone 
+    English description of a single scene, suitable for image generation AI. The prompts should:
+    1. Be visually descriptive and specific
+    2. Focus on different scenes that represent the story's progression
+    3. Include visual details about settings, characters, and emotions
+    4. Be written in English regardless of the input language
+    5. Not include any text/typography in the images
+    6. Each prompt should be 1-2 sentences only
+
+  user_prompt_template: |
+    I need {num_prompts} image prompts that capture the essence and flow of this story:
+
+    {text}
+    
+    Create exactly {num_prompts} different scene prompts in English that would make beautiful, 
+    cinematic images when used in an AI image generator. Each prompt should capture a 
+    different visual element or moment from the story, presenting a visual narrative journey of the text.
+
+    For each prompt:
+    1. Focus on key scenes or emotional moments
+    2. Be specific about visual details like lighting, colors, perspective
+    3. Include character expressions and body language
+    4. Set the scene with environmental details
+    
+    Return EACH prompt as a simple string, one per line - NO JSON format, NO numbering, just the prompts.
+
+# Video Generation Configurations
+video_gen:
+  default_negative_prompt: "Overexposure, static, blurred details, subtitles, paintings, pictures, still, overall gray, worst quality, low quality, JPEG compression residue, ugly, mutilated, redundant fingers, poorly painted hands, poorly painted faces, deformed, disfigured, deformed limbs, fused fingers, cluttered background, three legs, a lot of people in the background, upside down"
+  image_quality_prompt: "High quality, cinematic, detailed, sharp focus, professional photography"
+  frame_rate: 8
+  default_steps: 20
+  default_cfg: 6.0
+  default_sampler: "uni_pc"
+  default_scheduler: "simple"
+  default_video_length: 81  # In frames 
